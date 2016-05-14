@@ -31,8 +31,9 @@ if ( ! class_exists('AvanPress') ) {
 			$this->modules = array(
 				'AP_Settings'    => AP_Settings::get_instance(),
 				'AP_Cron'        => AP_Cron::get_instance(),
-				'AP_Gateway'     => AP_Gateway::get_instance(),
-				'AP_Notify'      => AP_Notify::get_instance(),
+                'AP_Gateway'       => AP_Gateway::get_instance(),
+                'AP_Api'       => AP_Api::get_instance(),
+				'AP_Notify'     => AP_Notify::get_instance(),
 			);
 		}
 
@@ -55,6 +56,15 @@ if ( ! class_exists('AvanPress') ) {
 				true
 			);
 
+			wp_register_script(
+				self::PREFIX . 'admin',
+				plugins_url( 'javascript/admin/avanpress.js', dirname( __FILE__ ) ),
+				array( 'jquery' ),
+				self::VERSION,
+				true
+			);
+
+
 			wp_register_style(
 				self::PREFIX . 'admin',
 				plugins_url( 'css/admin.css', dirname( __FILE__ ) ),
@@ -65,6 +75,7 @@ if ( ! class_exists('AvanPress') ) {
 
 			if ( is_admin() ) {
 				wp_enqueue_style( self::PREFIX . 'admin' );
+				wp_enqueue_script( self::PREFIX . 'admin' );
 			} else {
 				wp_enqueue_script( self::PREFIX . 'avanpress' );
 			}

@@ -4,6 +4,8 @@
  */
 ?>
 
+
+
 <?php if ( 'ap_settings[basic][field-hostname]' == $field['label_for'] ) : ?>
 
 	<input id="<?php esc_attr_e( 'ap_settings[basic][field-hostname]' ); ?>" name="<?php esc_attr_e( 'ap_settings[basic][field-hostname]' ); ?>" class="regular-text" value="<?php esc_attr_e( $settings['basic']['field-hostname'] ); ?>" />
@@ -42,15 +44,4 @@
 	<br />
 	<span class="example"> Your account's secret key available in the 'System settings' area of the cPanel.</span>
 
-<?php endif; ?>
-
-<?php
-/*
- * Advanced Section
- */
-?>
-
-
-<?php if ( 'ap_settings[advanced][field-import-button]' == $field['label_for'] ) : ?>
-	<input type="button" id="<?php esc_attr_e( 'ap_settings[advanced][field-import-button]' ); ?>" value="Import products" class="ap-import-products button-primary" name="<?php esc_attr_e( 'ap_settings[advanced][field-import-button]' ); ?>" />
 <?php endif; ?>

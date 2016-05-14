@@ -13,6 +13,11 @@
         $('.ap-import-products').on('click', function(){
            importProducts();
         });
+
+        // check connection event listeners
+        $('.ap-check-connection').on('click', function(){
+            checkConnection();
+        });
     });
 
     function importProducts(){
@@ -22,6 +27,26 @@
 
         $.post(ajaxurl, data, function(response) {
             alert('Server response from the AJAX URL ' + response);
+        });
+    }
+
+    function checkConnection(){
+        var data = {
+            'action': 'check_connection',
+        };
+
+        $.post(ajaxurl, data, function(response) {
+            var connectionStatus = false;
+            if (response){
+                var responseJSON = jQuery.parseJSON(response);
+                connectionStatus = responseJSON.connectionStatus
+            }
+
+            if (false == connectionStatus){
+                alert("could not connect");
+            } else {
+                alert("connection successful");
+            }
         });
     }
 

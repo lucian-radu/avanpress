@@ -56,6 +56,23 @@ function ap_requirements_error() {
 	require_once( dirname( __FILE__ ) . '/views/requirements-error.php' );
 }
 
+/**
+ * Hmac generic function
+ */
+function hmac($key, $data) {
+    $b = 64; // byte length for md5
+    if (strlen($key) > $b) {
+        $key = pack("H*",md5($key));
+    }
+    $key  = str_pad($key, $b, chr(0x00));
+    $ipad = str_pad('', $b, chr(0x36));
+    $opad = str_pad('', $b, chr(0x5c));
+    $k_ipad = $key ^ $ipad ;
+    $k_opad = $key ^ $opad;
+
+    return md5($k_opad  . pack("H*",md5($k_ipad . $data)));
+}
+
 /*
  * Check requirements and load main class
  * The main program needs to be in a separate file that only gets loaded if the plugin requirements are met. Otherwise older PHP installations could crash when trying to parse it.
@@ -69,6 +86,7 @@ if ( ap_requirements_met() ) {
 	require_once(__DIR__ . '/classes/ap-cron.php');
 	require_once(__DIR__ . '/classes/ap-instance-class.php');
 	require_once(__DIR__ . '/classes/ap-api.php');
+	require_once(__DIR__ . '/classes/gateway/ap-notify.php');
 
 	if ( class_exists('AvanPress') ) {
 		$GLOBALS['wpps'] = AvanPress::get_instance();

@@ -21,13 +21,13 @@
 			<input type="submit" name="submit" id="submit" class="button-primary" value="<?php esc_attr_e( 'Save Changes' ); ?>" />
 			<input type="button" value="Check connection" class="ap-check-connection button-secondary" <?php if ($check_connection_settings == false) : ?>disabled="disabled" title="Please set your connection settings first." <?php endif; ?> />
 			<span id="checkConnectionLoading" style="display:none;">
-				<img src="/wp-content/plugins/avanpress/images/loading.gif" />
+				<img src="<?php echo AP_PATH; ?>images/loading.gif" />
 			</span>
 			<span id="checkConnectionOk" style="display:none;">
-				<img src="/wp-content/plugins/avanpress/images/ok.png" />
+				<img src="<?php echo AP_PATH; ?>images/ok.png" />
 			</span>
 			<span id="checkConnectionNo" style="display:none;">
-				<img src="/wp-content/plugins/avanpress/images/no.png" />
+				<img src="<?php echo AP_PATH; ?>/images/no.png" />
 			</span>
 		</p>
 	</form>
@@ -37,12 +37,12 @@
 	<p>Update your product catalog via <b>Avangate API</b></p>
 	<input type="button" id="importProducts" value="Import products" class="ap-import-products button-primary" name="Import products" 	<?php if ($check_connection_settings == false) : ?> disabled="disabled"  title="Please set your connection settings first." <?php endif; ?>  />
 	<span id="importProductsLoading" style="display:none;">
-		<img src="/wp-content/plugins/avanpress/images/loading.gif" />
+		<img src="<?php echo AP_PATH; ?>images/loading.gif" />
 	</span>
 	<span id="importProductsOk" style="display:none;">
-		<img src="/wp-content/plug ins/avanpress/images/ok.png" />
+		<img src="<?php echo AP_PATH; ?>images/ok.png" />
 	</span>
 	<span id="importProductsNo" style="display:none;">
-		<img src="/wp-content/plugins/avanpress/images/no.png" />
+		<img src="<?php echo AP_PATH; ?>images/no.png" />
 	</span>
 </div> <!-- .wrap -->

@@ -1,4 +1,7 @@
 <?php
+
+require_once (__DIR__.'/WooProduct.php');
+
 class Avangate
 {
     protected $soapClient;
@@ -49,14 +52,16 @@ class Avangate
         foreach ($rawProducts as $rawProduct) {
 
             $product = array(
-                'ProductCode' => $rawProduct->ProductCode,
-                'ProductName' => $rawProduct->ProductName,
-                'ProductVersion' => $rawProduct->ProductVersion,
-                'ShortDescription' => $rawProduct->ShortDescription,
-                'LongDescription' => $rawProduct->LongDescription,
+                '_sku' => $rawProduct->ProductCode,
+                'post_title' => $rawProduct->ProductName,
+                //'ProductVersion' => $rawProduct->ProductVersion,
+                'post_excerpt' => $rawProduct->ShortDescription,
+                'post_content' => $rawProduct->LongDescription,
+                '_price' => $rawProduct->PricingConfigurations[0]->Prices->Regular[0]->Amount,
+                '_image' => $rawProduct->ProductImages[0]->URL,
             );
 
-            $prices = array();
+            /*
             foreach ($rawProduct->PricingConfigurations as $priceDetails) {
                 $price = array(
                     'Type' => $priceDetails->PriceType,
@@ -96,7 +101,18 @@ class Avangate
         return md5($k_opad  . pack("H*",md5($k_ipad . $data)));
     }
 
+    public function importProducts(){
+        //get products
+        $products = $this->getProducts();
+        if (is_array($products)){
+            foreach($products as $product){
+                $WooProduct = new WooProduct($product);
+                $WooProduct -> save($product);
+                //die(print_r($WooProduct,1));
+            }
+    }
 
+    }
 
 }
 

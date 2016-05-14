@@ -75,8 +75,7 @@ if ( ! class_exists( 'AP_Api' ) ) {
 
         public function ajax_import_products()
         {
-            echo json_encode($this->api->getProducts());
-            die();
+            $this->api->importProducts();
         }
 
 

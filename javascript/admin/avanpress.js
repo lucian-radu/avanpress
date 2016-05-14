@@ -42,6 +42,7 @@
                 connectionStatus = responseJSON.connectionStatus
             }
 
+
             if (false == connectionStatus){
                 alert("could not connect");
             } else {

@@ -3,7 +3,7 @@
 Plugin Name: AvanPress
 Plugin URI:  https://github.com/lucian-radu/avanpress.git
 Description: AvanPress is a full integration of Avangate API and the well-known WordPress CMS. With WordPress and  it’s powerful ecommerce module WooCommerce we will be able to import vendor products as WooCommerce products through Avangate API. Also part of this plugin is to create a Payment Gateway called Avangate that will have the role of processing orders placed in WooCommerce Cart through Avangate API of course. This way a vendor can have the alternative to go online with it’s own site with just a few clicks during coffee time.
-Version:     0.1 beta
+Version:     1.0
 Author:      Red Rockets
 Author URI:  http://avangate.com
 */

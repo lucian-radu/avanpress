@@ -12,7 +12,7 @@ if ( ! class_exists('AvanPress') ) {
 		protected static $writeable_properties = array();
 		protected $modules;
 
-		const VERSION    = '0.1beta';
+		const VERSION    = '1.0';
 		const DEBUG_MODE = true;
 
 

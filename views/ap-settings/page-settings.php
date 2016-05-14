@@ -36,4 +36,13 @@
 	<h2>Import products</h2>
 	<p>Update your product catalog via <b>Avangate API</b></p>
 	<input type="button" id="importProducts" value="Import products" class="ap-import-products button-primary" name="Import products" 	<?php if ($check_connection_settings == false) : ?> disabled="disabled"  title="Please set your connection settings first." <?php endif; ?>  />
+	<span id="importProductsLoading" style="display:none;">
+		<img src="/wp-content/plugins/avanpress/images/loading.gif" />
+	</span>
+	<span id="importProductsOk" style="display:none;">
+		<img src="/wp-content/plug ins/avanpress/images/ok.png" />
+	</span>
+	<span id="importProductsNo" style="display:none;">
+		<img src="/wp-content/plugins/avanpress/images/no.png" />
+	</span>
 </div> <!-- .wrap -->

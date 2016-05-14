@@ -25,8 +25,17 @@
             'action': 'import_products',
         };
 
+        $('#importProductsLoading').show();
+        $("#importProductsNo").hide();
+        $("#importProductsOk").hide();
+
         $.post(ajaxurl, data, function(response) {
-            alert('Server response from the AJAX URL ' + response);
+            $('#importProductsLoading').hide();
+            if (response == 1){
+                $("#importProductsOk").show();
+            } else {
+                $("#importProductsNo").show();
+            }
         });
     }
 

@@ -12,4 +12,6 @@ a few clicks during a coffee.
 
 Resources:
 https://www.woothemes.com/woocommerce/
+https://github.com/iandunn/WordPress-Plugin-Skeleton
+https://github.com/iandunn/admin-notice-helper
 

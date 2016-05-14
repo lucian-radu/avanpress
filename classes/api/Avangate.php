@@ -72,28 +72,16 @@ class Avangate
                 'post_excerpt' => $rawProduct->ShortDescription,
                 'post_content' => $rawProduct->LongDescription,
                 '_price' => $rawProduct->PricingConfigurations[0]->Prices->Regular[0]->Amount,
-                '_image' => $rawProduct->ProductImages[0]->URL,
-                'ImageUrl' => $rawProduct->ProductImages[0]->URL
+                //'_image' => $rawProduct->ProductImages[0]->URL,
             );
 
-            /*
-            foreach ($rawProduct->PricingConfigurations as $priceDetails) {
-                $price = array(
-                    'Type' => $priceDetails->PriceType,
-                    'Values' => $priceDetails->Prices->Regular
-                );
-
-                $values = array();
-                foreach ($priceDetails->Prices->Regular as $regularPrice) {
-                    $values['Currency'] = $regularPrice->Currency;
-                    $values['Amount'] = $regularPrice->Amount;
+            foreach ($rawProduct->ProductImages as $image) {
+                if ($image->Default) {
+                    $product['_image'] = $image->URL;
+                    break;
                 }
-                $price['Values'] = $values;
-
-                $prices = $price;
             }
-            $product['Prices'] = $prices;
-            */
+
 
             $products[] = $product;
         }
@@ -203,6 +191,7 @@ class Avangate
                //die(print_r($WooProduct,1));
            }
        }
+       return true;
    }
 
     public function cardType($number)

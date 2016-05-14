@@ -1,16 +1,16 @@
 <?php
 
 require_once( WP_PLUGIN_DIR . '/simpletest-for-wordpress/WpSimpleTest.php' );
-require_once( dirname( dirname( __DIR__ ) ) . '/classes/wpps-module.php' );
+require_once(dirname(dirname(__DIR__)) . '/classes/ap-module.php');
 
 /**
- * Unit tests for the WPPS_Module class
+ * Unit tests for the AP_Module class
  * Uses the SimpleTest For WordPress plugin
  *
  * @link http://wordpress.org/extend/plugins/simpletest-for-wordpress/
  */
-if ( ! class_exists( 'UnitTestWPPS_Module' ) ) {
-	class UnitTestWPPS_Module extends UnitTestCase {
+if ( ! class_exists( 'UnitTestAP_Module' ) ) {
+	class UnitTestAP_Module extends UnitTestCase {
 		/*
 		 * get_instance()
 		 */
@@ -97,12 +97,12 @@ if ( ! class_exists( 'UnitTestWPPS_Module' ) ) {
 				}
 			}
 		}
-	} // end UnitTestWPPS_Module
+	} // end UnitTestAP_Module
 }
 
 // Mock up a child class
 if ( ! class_exists( 'WPPSChildClass' ) ) {
-	class WPPSChildClass extends WPPS_Module {
+	class WPPSChildClass extends AP_Module {
 		protected $foo, $bar, $charlie;
 		protected static $readable_properties = array( 'foo', 'bar' );
 		protected static $writeable_properties = array( 'foo' );
@@ -138,7 +138,7 @@ if ( ! class_exists( 'WPPSChildClass' ) ) {
 
 // Mock up a child class
 if ( ! class_exists( 'WPPSAnotherChildClass' ) ) {
-	class WPPSAnotherChildClass extends WPPS_Module {
+	class WPPSAnotherChildClass extends AP_Module {
 		protected $delta, $echo, $foo;
 		protected static $readable_properties = array( 'delta', 'foo' );
 		protected static $writeable_properties = array( 'foo' );

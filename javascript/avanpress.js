@@ -8,7 +8,7 @@ function wppsWrapper( $ ) {
 		 * Main entry point
 		 */
 		init: function () {
-			wpps.prefix      = 'wpps_';
+			wpps.prefix      = 'ap_';
 			wpps.templateURL = $( '#template-url' ).val();
 			wpps.ajaxPostURL = $( '#ajax-post-url' ).val();
 

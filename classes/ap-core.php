@@ -7,13 +7,12 @@ if ( ! class_exists('AvanPress') ) {
 	 *
 	 * WordPress_Plugin_Skeleton is an object-oriented/MVC base for building WordPress plugins
 	 */
-	class AvanPress extends WPPS_Module {
+	class AvanPress extends AP_Module {
 		protected static $readable_properties  = array();    // These should really be constants, but PHP doesn't allow class constants to be arrays
 		protected static $writeable_properties = array();
 		protected $modules;
 
 		const VERSION    = '0.1beta';
-		const PREFIX     = 'wpps_';
 		const DEBUG_MODE = false;
 
 
@@ -30,8 +29,8 @@ if ( ! class_exists('AvanPress') ) {
 			$this->register_hook_callbacks();
 
 			$this->modules = array(
-				'WPPS_Settings'    => WPPS_Settings::get_instance(),
-				'WPPS_Cron'        => WPPS_Cron::get_instance(),
+				'AP_Settings'    => AP_Settings::get_instance(),
+				'AP_Cron'        => AP_Cron::get_instance(),
                 'AP_Gateway'       => AP_Gateway::get_instance()
 			);
 		}
@@ -179,7 +178,7 @@ if ( ! class_exists('AvanPress') ) {
 		 */
 		public function init() {
 			try {
-				$instance_example = new WPPS_Instance_Class( 'Instance example', '42' );
+				$instance_example = new AP_Instance_Class( 'Instance example', '42' );
 				//add_notice( $instance_example->foo .' '. $instance_example->bar );
 			} catch ( Exception $exception ) {
 				add_notice( __METHOD__ . ' error: ' . $exception->getMessage(), 'error' );
@@ -194,15 +193,15 @@ if ( ! class_exists('AvanPress') ) {
 		 * @param string $db_version
 		 */
 		public function upgrade( $db_version = 0 ) {
-			if ( version_compare( $this->modules['WPPS_Settings']->settings['db-version'], self::VERSION, '==' ) ) {
+			if ( version_compare( $this->modules['AP_Settings']->settings['db-version'], self::VERSION, '==' ) ) {
 				return;
 			}
 
 			foreach ( $this->modules as $module ) {
-				$module->upgrade( $this->modules['WPPS_Settings']->settings['db-version'] );
+				$module->upgrade( $this->modules['AP_Settings']->settings['db-version'] );
 			}
 
-			$this->modules['WPPS_Settings']->settings = array( 'db-version' => self::VERSION );
+			$this->modules['AP_Settings']->settings = array( 'db-version' => self::VERSION );
 			self::clear_caching_plugins();
 		}
 

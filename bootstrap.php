@@ -17,24 +17,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Access denied.' );
 }
 
-define( 'WPPS_NAME',                 'AvanPress' );
-define( 'WPPS_REQUIRED_PHP_VERSION', '5.4' );                          // because of get_called_class()
-define( 'WPPS_REQUIRED_WP_VERSION',  '3.1' );                          // because of esc_textarea()
+define( 'AP_NAME',                 'AvanPress' );
+define( 'AP_REQUIRED_PHP_VERSION', '5.4' );                          // because of get_called_class()
+define( 'AP_REQUIRED_WP_VERSION',  '3.1' );                          // because of esc_textarea()
 
 /**
  * Checks if the system requirements are met
  *
  * @return bool True if system requirements are met, false if not
  */
-function wpps_requirements_met() {
+function ap_requirements_met() {
 	global $wp_version;
 	//require_once( ABSPATH . '/wp-admin/includes/plugin.php' );		// to get is_plugin_active() early
 
-	if ( version_compare( PHP_VERSION, WPPS_REQUIRED_PHP_VERSION, '<' ) ) {
+	if ( version_compare( PHP_VERSION, AP_REQUIRED_PHP_VERSION, '<' ) ) {
 		return false;
 	}
 
-	if ( version_compare( $wp_version, WPPS_REQUIRED_WP_VERSION, '<' ) ) {
+	if ( version_compare( $wp_version, AP_REQUIRED_WP_VERSION, '<' ) ) {
 		return false;
 	}
 
@@ -50,7 +50,7 @@ function wpps_requirements_met() {
 /**
  * Prints an error that the system requirements weren't met.
  */
-function wpps_requirements_error() {
+function ap_requirements_error() {
 	global $wp_version;
 
 	require_once( dirname( __FILE__ ) . '/views/requirements-error.php' );
@@ -60,14 +60,14 @@ function wpps_requirements_error() {
  * Check requirements and load main class
  * The main program needs to be in a separate file that only gets loaded if the plugin requirements are met. Otherwise older PHP installations could crash when trying to parse it.
  */
-if ( wpps_requirements_met() ) {
-	require_once( __DIR__ . '/classes/wpps-module.php' );
-    require_once( __DIR__ . '/classes/avanpress.php' );
+if ( ap_requirements_met() ) {
+	require_once(__DIR__ . '/classes/ap-module.php');
+    require_once(__DIR__ . '/classes/ap-core.php');
     require_once( __DIR__ . '/classes/ap-gateway.php' );
 	require_once( __DIR__ . '/includes/admin-notice-helper/admin-notice-helper.php' );
-	require_once( __DIR__ . '/classes/wpps-settings.php' );
-	require_once( __DIR__ . '/classes/wpps-cron.php' );
-	require_once( __DIR__ . '/classes/wpps-instance-class.php' );
+	require_once(__DIR__ . '/classes/ap-settings.php');
+	require_once(__DIR__ . '/classes/ap-cron.php');
+	require_once(__DIR__ . '/classes/ap-instance-class.php');
 
 	if ( class_exists('AvanPress') ) {
 		$GLOBALS['wpps'] = AvanPress::get_instance();
@@ -75,5 +75,5 @@ if ( wpps_requirements_met() ) {
 		register_deactivation_hook( __FILE__, array( $GLOBALS['wpps'], 'deactivate' ) );
 	}
 } else {
-	add_action( 'admin_notices', 'wpps_requirements_error' );
+	add_action( 'admin_notices', 'ap_requirements_error' );
 }

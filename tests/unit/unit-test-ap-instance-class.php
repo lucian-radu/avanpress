@@ -1,17 +1,17 @@
 <?php
 
 require_once( WP_PLUGIN_DIR . '/simpletest-for-wordpress/WpSimpleTest.php' );
-require_once( dirname( dirname( __DIR__ ) ) . '/classes/wpps-instance-class.php' );
+require_once(dirname(dirname(__DIR__)) . '/classes/ap-instance-class.php');
 
 /**
- * Unit tests for WPPS_Instance_Class
+ * Unit tests for AP_Instance_Class
  *
  * Uses the SimpleTest For WordPress plugin
  *
  * @link http://wordpress.org/extend/plugins/simpletest-for-wordpress/
  */
-if ( ! class_exists( 'UnitTestWPPS_Instance_Class' ) ) {
-	class UnitTestWPPS_Instance_Class extends UnitTestCase {
+if ( ! class_exists( 'UnitTestAP_Instance_Class' ) ) {
+	class UnitTestAP_Instance_Class extends UnitTestCase {
 		/*
 		 * validate_is_valid()
 		 */
@@ -25,7 +25,7 @@ if ( ! class_exists( 'UnitTestWPPS_Instance_Class' ) ) {
 
 			foreach ( $valid_data_set as $pair ) {
 				try {
-					$valid = new WPPS_Instance_Class( $pair[0], $pair[1] );
+					$valid = new AP_Instance_Class( $pair[0], $pair[1] );
 					$this->pass();
 
 					$valid->foo = $pair[0];
@@ -45,14 +45,14 @@ if ( ! class_exists( 'UnitTestWPPS_Instance_Class' ) ) {
 
 			foreach ( $invalid_data_set as $pair ) {
 				try {
-					$invalid = new WPPS_Instance_Class( $pair[0], $pair[1] );
+					$invalid = new AP_Instance_Class( $pair[0], $pair[1] );
 					$this->fail( 'Expected an exception from (' . $pair[0] . ', ' . $pair[1] . ').' );
 				} catch ( Exception $e ) {
 					$this->pass();
 				}
 			}
 		}
-	} // end UnitTestWPPS_Settings
+	} // end UnitTestAP_Settings
 }
 
 if ( ! class_exists( 'GenericObject' ) ) {

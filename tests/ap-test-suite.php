@@ -12,9 +12,9 @@ if ( ! class_exists( 'WPPSTestSuite' ) ) {
 		function __construct() {
 			parent::__construct();
 
-			$this->addFile( dirname( __FILE__ ) . '/unit/unit-test-wpps-module.php' );
-			$this->addFile( dirname( __FILE__ ) . '/unit/unit-test-wpps-settings.php' );
-			$this->addFile( dirname( __FILE__ ) . '/unit/unit-test-wpps-instance-class.php' );
+			$this->addFile( dirname( __FILE__ ) . '/unit/unit-test-ap-module.php' );
+			$this->addFile( dirname( __FILE__ ) . '/unit/unit-test-ap-settings.php' );
+			$this->addFile( dirname( __FILE__ ) . '/unit/unit-test-ap-instance-class.php' );
 		}
 
 		/**

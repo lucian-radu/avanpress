@@ -7,7 +7,7 @@ if (!class_exists('AP_Gateway')) {
      *
      * Note: Because WP-Cron only fires hooks when HTTP requests are made, make sure that an external monitoring service pings the site regularly to ensure hooks are fired frequently
      */
-    class AP_Gateway extends WPPS_Module
+    class AP_Gateway extends AP_Module
     {
         protected static $readable_properties = array();
         protected static $writeable_properties = array();
@@ -69,13 +69,13 @@ if (!class_exists('AP_Gateway')) {
             if ( ! class_exists( 'WC_Payment_Gateway' ) ) return;
 
             // If we made it this far, then include our Gateway Class
-            require_once(__DIR__ . '/gateway/avangate-gateway.php');
+            require_once(__DIR__ . '/gateway/ap-avangate-gateway.php');
 
             // Now that we have successfully included our class,
             // Lets add it too WooCommerce
             add_filter( 'woocommerce_payment_gateways', array($this, 'add_gateway') );
 
-            add_filter( 'plugin_action_links_' . WPPS_NAME, array($this, 'action_links') );
+            add_filter( 'plugin_action_links_' . AP_NAME, array($this, 'action_links') );
 
 
         }

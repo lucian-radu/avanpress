@@ -96,14 +96,14 @@ if (!class_exists('AP_Notify')) {
                 }
                 $body = ob_get_contents();
                 ob_end_flush();
-
+                
                 $date_return = date('YmdGis');
-
+                
                 $return = strlen($_POST['IPN_PID'][0]).$_POST['IPN_PID'][0].strlen($_POST['IPN_PNAME'][0]).$_POST['IPN_PNAME'][0];
                 $return .= strlen($_POST['IPN_DATE']).$_POST['IPN_DATE'].strlen($date_return).$date_return;
-
+                
                 $hash =  hmac($pass, $result); /* HASH for data received */
-
+                
                 $body .= $result."\r\n\r\nHash: ".$hash."\r\n\r\nSignature: {$signature}\r\n\r\nReturnSTR: ".$return;
 
                 if ($hash == $signature) {
@@ -112,6 +112,9 @@ if (!class_exists('AP_Notify')) {
                     /* ePayment response */
                     $result_hash =  hmac($pass, $return);
                     echo '<EPAYMENT>'.$date_return.'|'.$result_hash.'</EPAYMENT>';
+                    
+                    $this->markOrderAsComplete($_POST['REFNOEXT']);
+                    
                     /* Begin automated procedures (START YOUR CODE)*/
                     if (self::DEBUG_MODE) {
                         @mail(get_option('admin_email'), 'Good IPN', $body);
@@ -125,6 +128,13 @@ if (!class_exists('AP_Notify')) {
                 }
                 exit;
             }
+        }
+        
+        
+        public function markOrderAsComplete($orderId)
+        {
+            $order = new WC_Order($orderId);
+            return $order->update_status('completed');
         }
         
         

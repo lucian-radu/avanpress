@@ -72,61 +72,66 @@ if (!class_exists('AP_Notify')) {
          */
         public function avangate_proxy_ipn()
         {
-            $options = get_option('ap_settings');
+            global $wp_query;
+ 
+            if (isset($wp_query->query_vars['avangate-ipn'])) {
 
-            // Avangate ipn
-            $pass = $options['basic']['field-merchant-key'];
-            $result = '';
-            $return = '';
-            $signature = $_POST['HASH'];
-            $body = '';
+                $options = get_option('ap_settings');
 
-            // read info received
-            ob_start();
-            while (list($key, $val) = each($_POST)) {
-                if ($key != 'HASH') {
-                    if (is_array($val)) {
-                        $result .= $this->arrayExpand($val);
+                // Avangate ipn
+                $pass = $options['basic']['field-merchant-key'];
+                $result = '';
+                $return = '';
+                $signature = $_POST['HASH'];
+                $body = '';
+
+                // read info received
+                ob_start();
+                while (list($key, $val) = each($_POST)) {
+                    if ($key != 'HASH') {
+                        if (is_array($val)) {
+                            $result .= $this->arrayExpand($val);
+                        }
+                        else {
+                            $size = strlen(stripslashes($val));
+                            $result	.= $size.stripslashes($val);
+                        }
                     }
-                    else {
-                        $size = strlen(stripslashes($val));
-                        $result	.= $size.stripslashes($val);
+                }
+                $body = ob_get_contents();
+                ob_end_flush();
+
+                $date_return = date('YmdGis');
+
+                $return = strlen($_POST['IPN_PID'][0]).$_POST['IPN_PID'][0].strlen($_POST['IPN_PNAME'][0]).$_POST['IPN_PNAME'][0];
+                $return .= strlen($_POST['IPN_DATE']).$_POST['IPN_DATE'].strlen($date_return).$date_return;
+
+                $hash =  hmac($pass, $result); /* HASH for data received */
+
+                $body .= $result."\r\n\r\nHash: ".$hash."\r\n\r\nSignature: {$signature}\r\n\r\nReturnSTR: ".$return;
+
+                if ($hash == $signature) {
+
+                    echo 'Verified OK!';
+                    /* ePayment response */
+                    $result_hash =  hmac($pass, $return);
+                    echo '<EPAYMENT>'.$date_return.'|'.$result_hash.'</EPAYMENT>';
+
+                    $this->markOrderAsComplete($_POST['REFNOEXT']);
+
+                    /* Begin automated procedures (START YOUR CODE)*/
+                    if (AvanPress::DEBUG_MODE) {
+                        @mail(get_option('admin_email'), 'Good IPN', $body);
                     }
                 }
-            }
-            $body = ob_get_contents();
-            ob_end_flush();
-
-            $date_return = date('YmdGis');
-
-            $return = strlen($_POST['IPN_PID'][0]).$_POST['IPN_PID'][0].strlen($_POST['IPN_PNAME'][0]).$_POST['IPN_PNAME'][0];
-            $return .= strlen($_POST['IPN_DATE']).$_POST['IPN_DATE'].strlen($date_return).$date_return;
-
-            $hash =  hmac($pass, $result); /* HASH for data received */
-
-            $body .= $result."\r\n\r\nHash: ".$hash."\r\n\r\nSignature: {$signature}\r\n\r\nReturnSTR: ".$return;
-
-            if ($hash == $signature) {
-
-                echo 'Verified OK!';
-                /* ePayment response */
-                $result_hash =  hmac($pass, $return);
-                echo '<EPAYMENT>'.$date_return.'|'.$result_hash.'</EPAYMENT>';
-
-                $this->markOrderAsComplete($_POST['REFNOEXT']);
-
-                /* Begin automated procedures (START YOUR CODE)*/
-                if (AvanPress::DEBUG_MODE) {
-                    @mail(get_option('admin_email'), 'Good IPN', $body);
+                else {
+                    /* warning email */
+                    if (AvanPress::DEBUG_MODE) {
+                        @mail(get_option('admin_email'), 'BAD IPN Signature', $body);
+                    }
                 }
+                exit;
             }
-            else {
-                /* warning email */
-                if (AvanPress::DEBUG_MODE) {
-                    @mail(get_option('admin_email'), 'BAD IPN Signature', $body);
-                }
-            }
-            exit;
         }
         
         

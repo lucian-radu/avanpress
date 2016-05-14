@@ -40,6 +40,15 @@ class Avangate
         }
     }
 
+    public function checkConnection(){
+        if (empty($this->sessionId)){
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
     public function getProducts()
     {
         $products = array();

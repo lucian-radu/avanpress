@@ -152,6 +152,10 @@ class Avangate
         $orderObj->BillingDetails = $billingObj;
         //$orderObj->DeliveryDetails = $deliveryObj;
 
+
+        $exp = $_POST['avangate_gateway-card-expiry'];
+        $exp = explode('/', $exp);
+
         //$orderObj->PaymentDetails = $paymentDetails;
         $orderObj->PaymentDetails = new stdClass();
         $orderObj->PaymentDetails->Type = 'TEST';
@@ -159,12 +163,12 @@ class Avangate
         $orderObj->PaymentDetails->PaymentMethod = new stdClass ();
         $orderObj->PaymentDetails->CustomerIP = $orderDetails->customer_ip_address;
         $orderObj->PaymentDetails->PaymentMethod->RecurringEnabled = true;
-        $orderObj->PaymentDetails->PaymentMethod->CardNumber = "4111111111111111";
-        $orderObj->PaymentDetails->PaymentMethod->CardType = 'visa';
-        $orderObj->PaymentDetails->PaymentMethod->ExpirationYear = '2019';
-        $orderObj->PaymentDetails->PaymentMethod->ExpirationMonth = '12';
-        $orderObj->PaymentDetails->PaymentMethod->HolderName = 'John';
-        $orderObj->PaymentDetails->PaymentMethod->CCID = '123';
+        $orderObj->PaymentDetails->PaymentMethod->CardNumber = str_replace(" ", '', $_POST['avangate_gateway-card-number']);
+        $orderObj->PaymentDetails->PaymentMethod->CardType = strtolower($this->cardType($_POST['avangate_gateway-card-number']));
+        $orderObj->PaymentDetails->PaymentMethod->ExpirationYear = '20'.trim($exp[1]);
+        $orderObj->PaymentDetails->PaymentMethod->ExpirationMonth = trim($exp[0]);
+        $orderObj->PaymentDetails->PaymentMethod->HolderName =  $orderDetails->billing_first_name." ".$orderDetails->billing_last_name;
+        $orderObj->PaymentDetails->PaymentMethod->CCID = $_POST['avangate_gateway-card-cvc'];
 
         //'http://hackaton.local.dev/avangate-ipn/register'
 
@@ -183,6 +187,26 @@ class Avangate
         $newOrderDetails = $this->soapClient->placeOrder($this->sessionId, $orderObj);
 
         return $newOrderDetails;
+    }
+
+    public function cardType($number)
+    {
+        $number = preg_replace('/[^\d]/', '', $number);
+        if (preg_match('/^3[47][0-9]{13}$/', $number)) {
+            return 'American Express';
+        } elseif (preg_match('/^3(?:0[0-5]|[68][0-9])[0-9]{11}$/', $number)) {
+            return 'Diners Club';
+        } elseif (preg_match('/^6(?:011|5[0-9][0-9])[0-9]{12}$/', $number)) {
+            return 'Discover';
+        } elseif (preg_match('/^(?:2131|1800|35\d{3})\d{11}$/', $number)) {
+            return 'JCB';
+        } elseif (preg_match('/^5[1-5][0-9]{14}$/', $number)) {
+            return 'MasterCard';
+        } elseif (preg_match('/^4[0-9]{12}(?:[0-9]{3})?$/', $number)) {
+            return 'Visa';
+        } else {
+            return 'Unknown';
+        }
     }
 }
 

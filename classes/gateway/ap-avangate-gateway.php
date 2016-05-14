@@ -109,6 +109,7 @@ class Avangate_Gateway extends WC_Payment_Gateway {
 
         $apiClient = AP_Api::get_instance();
         $settings = AP_Settings::get_instance();
+       // $order->card
 //var_dump($order->get_product_from_item()); die;
         try {
             $response = $apiClient->api->placeOrder($order);

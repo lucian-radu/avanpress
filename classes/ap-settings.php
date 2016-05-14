@@ -239,6 +239,16 @@ if ( ! class_exists( 'AP_Settings' ) ) {
                 'ap_section-basic',
                 array( 'label_for' => 'ap_settings[basic][field-hostname]' )
             );
+
+            add_settings_field(
+                'ap_field-proxy',
+                'Proxy',
+                array( $this, 'markup_fields' ),
+                'ap_settings',
+                'ap_section-basic',
+                array( 'label_for' => 'ap_settings[basic][field-proxy]' )
+            );
+
             add_settings_field(
                 'ap_field-location',
                 'Location',

@@ -68,6 +68,7 @@ if ( ap_requirements_met() ) {
 	require_once(__DIR__ . '/classes/ap-settings.php');
 	require_once(__DIR__ . '/classes/ap-cron.php');
 	require_once(__DIR__ . '/classes/ap-instance-class.php');
+	require_once(__DIR__ . '/classes/ap-api.php');
 
 	if ( class_exists('AvanPress') ) {
 		$GLOBALS['wpps'] = AvanPress::get_instance();

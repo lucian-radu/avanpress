@@ -78,7 +78,7 @@ class Avangate
                 $prices = $price;
             }
             $product['Prices'] = $prices;
-
+            */
 
             $products[] = $product;
         }

@@ -131,6 +131,11 @@ if (!class_exists('AP_Notify')) {
         }
         
         
+        /**
+         * Mark WooCommerce order as complete
+         * @param int $orderId
+         * @return bool
+         */
         public function markOrderAsComplete($orderId)
         {
             $order = new WC_Order($orderId);

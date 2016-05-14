@@ -93,8 +93,12 @@ if ( ! class_exists( 'AP_Settings' ) ) {
          * @mvc Controller
          */
         public function init() {
-            self::$default_settings = self::get_default_settings();
-            $this->settings         = self::get_settings();
+            self::$default_settings        = self::get_default_settings();
+            $this->settings                = self::get_settings();
+
+            $this->settings["check_connection_settings"] = $this->check_connection_settings();
+            $GLOBALS['ap_settings']                      = [];
+            $GLOBALS['ap_settings']['settings']          = $this->settings;
         }
 
         /**
@@ -145,13 +149,14 @@ if ( ! class_exists( 'AP_Settings' ) ) {
             );
 
             $advanced = array(
-                'field-example2' => ''
+                'field-example2' => 'asdasd'
             );
 
             return array(
-                'db-version' => '0',
-                'basic'      => $basic,
-                'advanced'   => $advanced
+                'check_connection_settings'=> false,
+                'db-version'               => '0',
+                'basic'                    => $basic,
+                'advanced'                 => $advanced
             );
         }
 
@@ -221,6 +226,7 @@ if ( ! class_exists( 'AP_Settings' ) ) {
          * @mvc Controller
          */
         public function register_settings() {
+
             /*
              * Connection Section
              */
@@ -229,6 +235,17 @@ if ( ! class_exists( 'AP_Settings' ) ) {
                 'Connection details',
                 __CLASS__ . '::markup_section_headers',
                 'ap_settings'
+            );
+
+            // Connection form fields
+
+            add_settings_field(
+                'ap_field-hostname',
+                'Hostname',
+                array( $this, 'markup_fields' ),
+                'ap_settings',
+                'ap_section-basic',
+                array( 'label_for' => 'ap_settings[basic][field-hostname]' )
             );
             // Connection form fields
             add_settings_field(
@@ -277,33 +294,12 @@ if ( ! class_exists( 'AP_Settings' ) ) {
             /*
              * Import products button
              */
-            add_settings_section(
-                'ap_section-advanced',
-                'Import',
-                __CLASS__ . '::markup_section_headers',
-                'ap_settings'
-            );
-
-
-            add_settings_field(
-                'ap_field-check-connection-button',
-                'Check avangate connection',
-                array( $this, 'markup_fields' ),
-                'ap_settings',
-                'ap_section-advanced',
-                array( 'label_for' => 'ap_settings[advanced][field-check-connection-button]')
-            );
-
-            add_settings_field(
-                'ap_field-import-button',
-                'Import products',
-                array( $this, 'markup_fields' ),
-                'ap_settings',
-                'ap_section-advanced',
-                array( 'label_for' => 'ap_settings[advanced][field-import-button]')
-            );
-
-
+//            add_settings_section(
+//                'ap_section-advanced',
+//                'Import',
+//                __CLASS__ . '::markup_section_headers',
+//                'ap_settings'
+//            );
 
             // The settings container
             register_setting(
@@ -363,29 +359,45 @@ if ( ! class_exists( 'AP_Settings' ) ) {
             /*
              * Connection Settings validation
              */
-            if ( empty( trim($new_settings['basic']['field-hostname']) )) {
-                add_notice( 'Hostname is mandatory', 'error' );
-            }
-            if ( empty( trim($new_settings['basic']['field-location']) )) {
-                add_notice( 'Location is mandatory', 'error' );
-            }
-            if ( empty( trim($new_settings['basic']['field-merchant-code']) )) {
-                add_notice( 'Merchant code is mandatory', 'error' );
-            }
-            if ( empty( trim($new_settings['basic']['field-merchant-key']) )) {
-                add_notice( 'Merchant key is mandatory', 'error' );
-            }
+//            if ( empty( trim($new_settings['basic']['field-hostname']) )) {
+//                add_notice( 'Hostname is mandatory', 'error' );
+//            }
+//            if ( empty( trim($new_settings['basic']['field-location']) )) {
+//                add_notice( 'Location is mandatory', 'error' );
+//            }
+//            if ( empty( trim($new_settings['basic']['field-merchant-code']) )) {
+//                add_notice( 'Merchant code is mandatory', 'error' );
+//            }
+//            if ( empty( trim($new_settings['basic']['field-merchant-key']) )) {
+//                add_notice( 'Merchant key is mandatory', 'error' );
+//            }
 
             /*
              * Advanced Settings
              */
 
-            $new_settings['advanced']['field-example2'] = absint( $new_settings['advanced']['field-example2'] );
+            // $new_settings['advanced']['field-example2'] = 'asdasdasd';
 
 
             return $new_settings;
         }
 
+        /**
+         * Check if all connection fields are complete.
+         */
+        public function check_connection_settings(){
+            $response = true;
+            // check settings
+            $options = get_option('ap_settings');
+            $mandatory_basic_keys = array("field-hostname", "field-location", "field-merchant-code", "field-merchant-key");
+            foreach ($mandatory_basic_keys as $mandatory_key){
+                if (empty($options["basic"][$mandatory_key])){
+                    $response = false;
+                    break;
+                }
+            }
+            return $response;
+        }
 
         /*
          * User Settings

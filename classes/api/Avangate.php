@@ -31,7 +31,7 @@ class Avangate
         $this->soapClient = $client;
 
         $string = strlen($connectionDetails['merchantCode']) . $connectionDetails['merchantCode'] . strlen($now) . $now;
-        $hash = $this->hmac($connectionDetails['secretKey'], $string);
+        $hash = hmac($connectionDetails['secretKey'], $string);
 
         try {
             $this->sessionId = $this->soapClient->login($connectionDetails['merchantCode'], $now, $hash);
@@ -80,23 +80,6 @@ class Avangate
 
         return $products;
     }
-
-    private function hmac($key, $data)
-    {
-        $b = 64; // byte length for md5
-        if (strlen($key) > $b) {
-            $key = pack("H*",md5($key));
-        }
-        $key  = str_pad($key, $b, chr(0x00));
-        $ipad = str_pad('', $b, chr(0x36));
-        $opad = str_pad('', $b, chr(0x5c));
-        $k_ipad = $key ^ $ipad ;
-        $k_opad = $key ^ $opad;
-
-        return md5($k_opad  . pack("H*",md5($k_ipad . $data)));
-    }
-
-
 
 }
 

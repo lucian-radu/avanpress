@@ -38,10 +38,9 @@
         $.post(ajaxurl, data, function(response) {
             var connectionStatus = false;
             if (response){
-                var responseJSON     = jQuery.parseJSON(response);
+                var responseJSON = jQuery.parseJSON(response);
                 connectionStatus = responseJSON.connectionStatus
             }
-
 
             if (false == connectionStatus){
                 alert("could not connect");

@@ -21,6 +21,8 @@ define( 'AP_NAME',                 'AvanPress' );
 define( 'AP_REQUIRED_PHP_VERSION', '5.4' );                          // because of get_called_class()
 define( 'AP_REQUIRED_WP_VERSION',  '3.1' );                          // because of esc_textarea()
 
+define( 'AP_PATH', plugin_dir_url( FILE ) . 'avanpress/');
+
 /**
  * Checks if the system requirements are met
  *

@@ -1,6 +1,6 @@
 <?php
 
-require_once (__DIR__.'/WooProduct.php');
+require_once(__DIR__ . '/WooProduct.php');
 
 class Avangate
 {
@@ -101,7 +101,7 @@ class Avangate
         return $products;
     }
 
-    public function placeOrder($orderDetails)
+    public function placeOrder($orderDetails, $environment)
     {
         if (empty($orderDetails)) {
             throw new Exception('Empty order!');
@@ -135,16 +135,6 @@ class Avangate
         $deliveryObj->Phone = $orderDetails->shipping_phone;
         $deliveryObj->Email = $orderDetails->shipping_email;
 
-        $paymentMethod = new stdClass();
-        $paymentMethod->RecurringEnabled = 1;
-
-//        $paymentDetails = new stdClass();
-//       // $paymentDetails->Type = 'CCNOPCI'; //TEST
-//        $paymentDetails->Type = 'CCNOPCI'; //TEST
-//        $paymentDetails->Currency = $orderDetails->order_currency;
-//        $paymentDetails->CustomerIP = $orderDetails->customer_ip_address;
-//        $paymentDetails->PaymentMethod = $paymentMethod;
-
         $orderObj = new stdClass();
         $orderObj->Currency = $orderDetails->order_currency;
         $orderObj->Country = $orderDetails->billing_country;
@@ -155,25 +145,34 @@ class Avangate
         $orderObj->BillingDetails = $billingObj;
         //$orderObj->DeliveryDetails = $deliveryObj;
 
+        if (!$environment) {
+            $paymentMethod = new stdClass();
+            $paymentMethod->RecurringEnabled = 1;
 
-        $exp = $_POST['avangate_gateway-card-expiry'];
-        $exp = explode('/', $exp);
+            $paymentDetails = new stdClass();
+            $paymentDetails->Type = 'CCNOPCI';
+            $paymentDetails->Currency = $orderDetails->order_currency;
+            $paymentDetails->CustomerIP = $orderDetails->customer_ip_address;
+            $paymentDetails->PaymentMethod = $paymentMethod;
+            $orderObj->PaymentDetails = $paymentDetails;
 
-        //$orderObj->PaymentDetails = $paymentDetails;
-        $orderObj->PaymentDetails = new stdClass();
-        $orderObj->PaymentDetails->Type = 'TEST';
-        $orderObj->PaymentDetails->Currency = $orderDetails->order_currency;
-        $orderObj->PaymentDetails->PaymentMethod = new stdClass ();
-        $orderObj->PaymentDetails->CustomerIP = $orderDetails->customer_ip_address;
-        $orderObj->PaymentDetails->PaymentMethod->RecurringEnabled = true;
-        $orderObj->PaymentDetails->PaymentMethod->CardNumber = str_replace(" ", '', $_POST['avangate_gateway-card-number']);
-        $orderObj->PaymentDetails->PaymentMethod->CardType = strtolower($this->cardType($_POST['avangate_gateway-card-number']));
-        $orderObj->PaymentDetails->PaymentMethod->ExpirationYear = '20'.trim($exp[1]);
-        $orderObj->PaymentDetails->PaymentMethod->ExpirationMonth = trim($exp[0]);
-        $orderObj->PaymentDetails->PaymentMethod->HolderName =  $orderDetails->billing_first_name." ".$orderDetails->billing_last_name;
-        $orderObj->PaymentDetails->PaymentMethod->CCID = $_POST['avangate_gateway-card-cvc'];
+        } else {
+            $exp = $_POST['avangate_gateway-card-expiry'];
+            $exp = explode('/', $exp);
+            $orderObj->PaymentDetails = new stdClass();
+            $orderObj->PaymentDetails->Type = 'TEST';
+            $orderObj->PaymentDetails->Currency = $orderDetails->order_currency;
+            $orderObj->PaymentDetails->PaymentMethod = new stdClass ();
+            $orderObj->PaymentDetails->CustomerIP = $orderDetails->customer_ip_address;
+            $orderObj->PaymentDetails->PaymentMethod->RecurringEnabled = true;
+            $orderObj->PaymentDetails->PaymentMethod->CardNumber = str_replace(" ", '', $_POST['avangate_gateway-card-number']);
+            $orderObj->PaymentDetails->PaymentMethod->CardType = strtolower($this->cardType($_POST['avangate_gateway-card-number']));
+            $orderObj->PaymentDetails->PaymentMethod->ExpirationYear = '20' . trim($exp[1]);
+            $orderObj->PaymentDetails->PaymentMethod->ExpirationMonth = trim($exp[0]);
+            $orderObj->PaymentDetails->PaymentMethod->HolderName = $orderDetails->billing_first_name . " " . $orderDetails->billing_last_name;
+            $orderObj->PaymentDetails->PaymentMethod->CCID = $_POST['avangate_gateway-card-cvc'];
 
-        //'http://hackaton.local.dev/avangate-ipn/register'
+        }
 
         $orderObj->Items = array();
         foreach ($orderDetails->get_items() as $idx => $productInfo) {
@@ -181,29 +180,28 @@ class Avangate
             $productObj = new stdClass();
             $productObj->Code = $product->get_sku();
             $productObj->Quantity = $productInfo['qty'];
-
             $orderObj->Items[$idx] = $productObj;
-    }
+        }
 
         //print_r($orderObj); exit;
 
         $newOrderDetails = $this->soapClient->placeOrder($this->sessionId, $orderObj);
 
         return $newOrderDetails;
-}
+    }
 
-   public function importProducts()
-   {
-       //get products
-       $products = $this->getProducts();
-       if (is_array($products)) {
-           foreach ($products as $product) {
-               $WooProduct = new WooProduct($product);
-               $WooProduct->save($product);
-               //die(print_r($WooProduct,1));
-           }
-       }
-   }
+    public function importProducts()
+    {
+        //get products
+        $products = $this->getProducts();
+        if (is_array($products)) {
+            foreach ($products as $product) {
+                $WooProduct = new WooProduct($product);
+                $WooProduct->save($product);
+                //die(print_r($WooProduct,1));
+            }
+        }
+    }
 
     public function cardType($number)
     {

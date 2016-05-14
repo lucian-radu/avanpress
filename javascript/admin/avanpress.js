@@ -35,17 +35,23 @@
             'action': 'check_connection',
         };
 
+        $("#checkConnectionNo").hide();
+        $("#checkConnectionOk").hide();
+
+        $('#checkConnectionLoading').show();
+
         $.post(ajaxurl, data, function(response) {
             var connectionStatus = false;
             if (response){
+                $('#checkConnectionLoading').hide();
                 var responseJSON = jQuery.parseJSON(response);
                 connectionStatus = responseJSON.connectionStatus
             }
 
             if (false == connectionStatus){
-                alert("could not connect");
+                $("#checkConnectionNo").show();
             } else {
-                alert("connection successful");
+                $("#checkConnectionOk").show();
             }
         });
     }

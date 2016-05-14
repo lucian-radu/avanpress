@@ -12,17 +12,21 @@ class Avangate
 
         $now = date('Y-m-d H:i:s');
 
-        $client = new SoapClient($connectionDetails['host'] . '?wsdl', array(
-            'location' => $connectionDetails['host'],
-            'proxy_host' => isset($connectionDetails['proxyHost']) ? $connectionDetails['proxyHost'] : '',
-            'proxy_port' => isset($connectionDetails['proxyPort']) ? $connectionDetails['proxyPort'] : '',
-            'stream_context' => stream_context_create(array(
-                'ssl' => array(
-                    'verify_peer' => false,
-                    'verify_peer_name' => false
-                )
-            ))
-        ));
+        try {
+            $client = new SoapClient($connectionDetails['host'] . '?wsdl', [
+                'location'       => $connectionDetails['host'],
+                'proxy_host'     => isset($connectionDetails['proxyHost']) ? $connectionDetails['proxyHost'] : '',
+                'proxy_port'     => isset($connectionDetails['proxyPort']) ? $connectionDetails['proxyPort'] : '',
+                'stream_context' => stream_context_create([
+                    'ssl' => [
+                        'verify_peer'      => false,
+                        'verify_peer_name' => false
+                    ]
+                ])
+            ]);
+        } catch ( SoapFault $e ) { // Do NOT try and catch "Exception" here
+            echo 'sorry... our service is down';
+        }
 
         if (!$client) {
             throw new Exception('Could not create SOAP client!');

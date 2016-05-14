@@ -35,6 +35,7 @@ if ( ! class_exists('AvanPress') ) {
                 'AP_Api'       => AP_Api::get_instance(),
 				'AP_Notify'     => AP_Notify::get_instance(),
 			);
+
 		}
 
 

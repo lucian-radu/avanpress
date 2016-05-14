@@ -15,6 +15,7 @@ if ( ! class_exists( 'AP_Api' ) ) {
         public $api;
 
         protected $settings = array();
+        protected $errors = array();
 
         /*
          * Magic methods
@@ -32,9 +33,13 @@ if ( ! class_exists( 'AP_Api' ) ) {
             try {
                 $this->api = new Avangate($this->settings);
             } catch (Exception $e) {
-                echo $e->getMessage();
+                $this->errors[] = $e->getMessage();
+                // throw $e;
             }
 
+        }
+        public function getErrors(){
+            return $this->errors;
         }
 
         protected function buildConnection(){

@@ -14,11 +14,18 @@
 
 <?php endif; ?>
 
-<?php if ( 'ap_settings[basic][field-proxy]' == $field['label_for'] ) : ?>
+<?php if ( 'ap_settings[basic][field-proxy-host]' == $field['label_for'] ) : ?>
 
-	<input id="<?php esc_attr_e( 'ap_settings[basic][field-proxy]' ); ?>" name="<?php esc_attr_e( 'ap_settings[basic][field-proxy]' ); ?>" class="regular-text" value="<?php esc_attr_e( $settings['basic']['field-proxy'] ); ?>" />
+	<input id="<?php esc_attr_e( 'ap_settings[basic][field-proxy-host]' ); ?>" name="<?php esc_attr_e( 'ap_settings[basic][field-proxy-host]' ); ?>" class="regular-text" value="<?php esc_attr_e( $settings['basic']['field-proxy-host'] ); ?>" />
 	<br />
-	<span class="example"> 	Ex: proxy.avangate.local:8080</span>
+	<span class="example"> 	Ex: proxy.avangate.local</span>
+<?php endif; ?>
+
+<?php if ( 'ap_settings[basic][field-proxy-port]' == $field['label_for'] ) : ?>
+
+	<input id="<?php esc_attr_e( 'ap_settings[basic][field-proxy-port]' ); ?>" name="<?php esc_attr_e( 'ap_settings[basic][field-proxy-port]' ); ?>" class="regular-text" value="<?php esc_attr_e( $settings['basic']['field-proxy-port'] ); ?>" />
+	<br />
+	<span class="example"> 	Ex: 8080</span>
 
 <?php endif; ?>
 

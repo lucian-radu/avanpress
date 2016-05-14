@@ -258,12 +258,21 @@ if ( ! class_exists( 'AP_Settings' ) ) {
             );
 
             add_settings_field(
-                'ap_field-proxy',
-                'Proxy',
+                'ap_field-proxy-host',
+                'Proxy host',
                 array( $this, 'markup_fields' ),
                 'ap_settings',
                 'ap_section-basic',
-                array( 'label_for' => 'ap_settings[basic][field-proxy]' )
+                array( 'label_for' => 'ap_settings[basic][field-proxy-host]' )
+            );
+
+            add_settings_field(
+                'ap_field-proxy-port',
+                'Proxy port',
+                array( $this, 'markup_fields' ),
+                'ap_settings',
+                'ap_section-basic',
+                array( 'label_for' => 'ap_settings[basic][field-proxy-port]' )
             );
 
             add_settings_field(

@@ -192,16 +192,18 @@ class Avangate
         return $newOrderDetails;
 }
 
-   public function importProducts(){
-        //get products
-        $products = $this->getProducts();
-        if (is_array($products)){
-            foreach($products as $product){
-                $WooProduct = new WooProduct($product);
-                $WooProduct -> save($product);
-                //die(print_r($WooProduct,1));
-            }
-    }
+   public function importProducts()
+   {
+       //get products
+       $products = $this->getProducts();
+       if (is_array($products)) {
+           foreach ($products as $product) {
+               $WooProduct = new WooProduct($product);
+               $WooProduct->save($product);
+               //die(print_r($WooProduct,1));
+           }
+       }
+   }
 
     public function cardType($number)
     {

@@ -177,6 +177,9 @@ class Avangate_Gateway extends WC_Payment_Gateway
         if (isset($response->RefNo) && !empty($response->RefNo)) {
             $order->add_order_note(__('Avangate order placed with refno: ' . $response->RefNo, 'avanpress'));
 
+            // Mark order as Paid
+            $order->update_status('processing', __( 'Payment to be confirmed via IPN.', 'woocommerce' ));
+
             return array(
                 'result' => 'success',
                 'redirect' => $this->get_return_url($order),

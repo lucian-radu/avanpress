@@ -33,7 +33,7 @@ class Avangate
 
             $client = new SoapClient($connectionDetails['host'] . '?wsdl', $options);
         } catch ( SoapFault $e ) { // Do NOT try and catch "Exception" here
-            echo 'sorry... our service is down';
+            //throw new Exception('sorry... our service is down');
         }
 
         if (!$client) {
@@ -189,16 +189,17 @@ class Avangate
 
     public function importProducts()
     {
+        $result = true;
         //get products
         $products = $this->getProducts();
         if (is_array($products)) {
             foreach ($products as $product) {
                 $WooProduct = new WooProduct($product);
-                $WooProduct->save($product);
-                //die(print_r($WooProduct,1));
+                $product_id = $WooProduct->save($product);
+                $result = $result && $product_id;
             }
         }
-       return true;
+       return $result;
     }
 
     public function cardType($number)
@@ -221,6 +222,3 @@ class Avangate
         }
     }
 }
-
-
-/* eof */

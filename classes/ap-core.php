@@ -12,13 +12,8 @@ if ( ! class_exists('AvanPress') ) {
 		protected static $writeable_properties = array();
 		protected $modules;
 
-		const VERSION    = '1.0';
-		const DEBUG_MODE = true;
-
-
-		/*
-		 * Magic methods
-		 */
+		const VERSION    = '1.2';
+		const DEBUG_MODE = false;
 
 		/**
 		 * Constructor
@@ -30,18 +25,11 @@ if ( ! class_exists('AvanPress') ) {
 
 			$this->modules = array(
 				'AP_Settings'    => AP_Settings::get_instance(),
-				'AP_Cron'        => AP_Cron::get_instance(),
                 'AP_Gateway'       => AP_Gateway::get_instance(),
                 'AP_Api'       => AP_Api::get_instance(),
 				'AP_Notify'     => AP_Notify::get_instance(),
 			);
-
 		}
-
-
-		/*
-		 * Static methods
-		 */
 
 		/**
 		 * Enqueues CSS, JavaScript, etc
@@ -64,7 +52,6 @@ if ( ! class_exists('AvanPress') ) {
 				self::VERSION,
 				true
 			);
-
 
 			wp_register_style(
 				self::PREFIX . 'admin',
@@ -102,11 +89,6 @@ if ( ! class_exists('AvanPress') ) {
 				}
 			}
 		}
-
-
-		/*
-		 * Instance methods
-		 */
 
 		/**
 		 * Prepares sites to use the plugin during single or network-wide activation
@@ -229,5 +211,5 @@ if ( ! class_exists('AvanPress') ) {
 		protected function is_valid( $property = 'all' ) {
 			return true;
 		}
-	} // end WordPress_Plugin_Skeleton
+	}
 }

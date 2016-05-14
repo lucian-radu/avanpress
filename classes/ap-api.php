@@ -4,9 +4,7 @@ require_once (__DIR__.'/api/Avangate.php');
 if ( ! class_exists( 'AP_Api' ) ) {
 
     /**
-     * Handles cron jobs and intervals
-     *
-     * Note: Because WP-Cron only fires hooks when HTTP requests are made, make sure that an external monitoring service pings the site regularly to ensure hooks are fired frequently
+     * Handles api calls
      */
     class AP_Api extends AP_Module {
         protected static $readable_properties  = array('api');
@@ -16,10 +14,6 @@ if ( ! class_exists( 'AP_Api' ) ) {
 
         protected $settings = array();
         protected $errors = array();
-
-        /*
-         * Magic methods
-         */
 
         /**
          * Constructor
@@ -34,16 +28,15 @@ if ( ! class_exists( 'AP_Api' ) ) {
                 $this->api = new Avangate($this->settings);
             } catch (Exception $e) {
                 $this->errors[] = $e->getMessage();
-                // throw $e;
             }
 
         }
+
         public function getErrors(){
             return $this->errors;
         }
 
         protected function buildConnection(){
-
             $apSetting = AP_Settings::get_instance();
 
             // Readable
@@ -62,29 +55,21 @@ if ( ! class_exists( 'AP_Api' ) ) {
             return $settings;
         }
 
-        /*
-         * Instance methods
-         */
-
         /**
          * Register callbacks for actions and filters
          *
          * @mvc Controller
          */
         public function register_hook_callbacks() {
-            //add_action( 'ap_cron_timed_jobs',  __CLASS__ . '::fire_job_at_time' );
-            //add_action( 'ap_cron_example_job', __CLASS__ . '::example_job' );
-
             add_action( 'init',                  array( $this, 'init' ) );
             add_action( 'wp_ajax_import_products', array($this, 'ajax_import_products') );
             add_action( 'wp_ajax_check_connection', array($this, 'ajax_check_connection') );
-
-            //add_filter( 'cron_schedules',        __CLASS__ . '::add_custom_cron_intervals' );
         }
 
         public function ajax_import_products()
         {
-            $this->api->importProducts();
+            echo json_encode($this->api->importProducts());
+            die();
         }
 
         public function ajax_check_connection()
@@ -109,12 +94,6 @@ if ( ! class_exists( 'AP_Api' ) ) {
          * @param string $db_version
          */
         public function upgrade( $db_version = 0 ) {
-            /*
-            if( version_compare( $db_version, 'x.y.z', '<' ) )
-            {
-                // Do stuff
-            }
-            */
         }
 
         /**
@@ -125,7 +104,6 @@ if ( ! class_exists( 'AP_Api' ) ) {
          * @param bool $network_wide
          */
         public function activate( $network_wide ) {
-
         }
 
         /**
@@ -134,7 +112,6 @@ if ( ! class_exists( 'AP_Api' ) ) {
          * @mvc Controller
          */
         public function deactivate(){
-
         }
 
 
@@ -149,5 +126,5 @@ if ( ! class_exists( 'AP_Api' ) ) {
         protected function is_valid( $property = 'all' ) {
             return true;
         }
-    } // end AP_Cron
+    }
 }

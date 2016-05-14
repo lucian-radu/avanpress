@@ -31,7 +31,7 @@
 
         $.post(ajaxurl, data, function(response) {
             $('#importProductsLoading').hide();
-            if (response == 1){
+            if ('true' == response){
                 $("#importProductsOk").show();
             } else {
                 $("#importProductsNo").show();

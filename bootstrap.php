@@ -17,11 +17,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Access denied.' );
 }
 
+define( 'AP_PATH', plugin_dir_url( __FILE__ ) );
 define( 'AP_NAME',                 'AvanPress' );
 define( 'AP_REQUIRED_PHP_VERSION', '5.4' );                          // because of get_called_class()
 define( 'AP_REQUIRED_WP_VERSION',  '3.1' );                          // because of esc_textarea()
-
-define( 'AP_PATH', plugin_dir_url( FILE ) . 'avanpress/');
 
 /**
  * Checks if the system requirements are met
@@ -30,7 +29,7 @@ define( 'AP_PATH', plugin_dir_url( FILE ) . 'avanpress/');
  */
 function ap_requirements_met() {
 	global $wp_version;
-	//require_once( ABSPATH . '/wp-admin/includes/plugin.php' );		// to get is_plugin_active() early
+	require_once( ABSPATH . '/wp-admin/includes/plugin.php' );		// to get is_plugin_active() early
 
 	if ( version_compare( PHP_VERSION, AP_REQUIRED_PHP_VERSION, '<' ) ) {
 		return false;
@@ -40,11 +39,9 @@ function ap_requirements_met() {
 		return false;
 	}
 
-	/*'
-	if ( ! is_plugin_active( 'plugin-directory/plugin-file.php' ) ) {
+	if ( ! is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
 		return false;
 	}
-	*/
 
 	return true;
 }
@@ -54,25 +51,7 @@ function ap_requirements_met() {
  */
 function ap_requirements_error() {
 	global $wp_version;
-
 	require_once( dirname( __FILE__ ) . '/views/requirements-error.php' );
-}
-
-/**
- * Hmac generic function
- */
-function hmac($key, $data) {
-    $b = 64; // byte length for md5
-    if (strlen($key) > $b) {
-        $key = pack("H*",md5($key));
-    }
-    $key  = str_pad($key, $b, chr(0x00));
-    $ipad = str_pad('', $b, chr(0x36));
-    $opad = str_pad('', $b, chr(0x5c));
-    $k_ipad = $key ^ $ipad ;
-    $k_opad = $key ^ $opad;
-
-    return md5($k_opad  . pack("H*",md5($k_ipad . $data)));
 }
 
 /*
@@ -82,18 +61,18 @@ function hmac($key, $data) {
 if ( ap_requirements_met() ) {
 	require_once(__DIR__ . '/classes/ap-module.php');
     require_once(__DIR__ . '/classes/ap-core.php');
-    require_once( __DIR__ . '/classes/ap-gateway.php' );
-	require_once( __DIR__ . '/includes/admin-notice-helper/admin-notice-helper.php' );
+    require_once(__DIR__ . '/classes/ap-gateway.php' );
+	require_once(__DIR__ . '/includes/admin-notice-helper/admin-notice-helper.php' );
 	require_once(__DIR__ . '/classes/ap-settings.php');
-	require_once(__DIR__ . '/classes/ap-cron.php');
 	require_once(__DIR__ . '/classes/ap-instance-class.php');
 	require_once(__DIR__ . '/classes/ap-api.php');
-	require_once(__DIR__ . '/classes/gateway/ap-notify.php');
+    require_once(__DIR__ . '/classes/gateway/ap-notify.php');
+    require_once(__DIR__ . '/includes/functions/functions.php');
 
 	if ( class_exists('AvanPress') ) {
-		$GLOBALS['wpps'] = AvanPress::get_instance();
-		register_activation_hook(   __FILE__, array( $GLOBALS['wpps'], 'activate' ) );
-		register_deactivation_hook( __FILE__, array( $GLOBALS['wpps'], 'deactivate' ) );
+		$GLOBALS['ap'] = AvanPress::get_instance();
+		register_activation_hook(   __FILE__, array( $GLOBALS['ap'], 'activate' ) );
+		register_deactivation_hook( __FILE__, array( $GLOBALS['ap'], 'deactivate' ) );
 	}
 } else {
 	add_action( 'admin_notices', 'ap_requirements_error' );

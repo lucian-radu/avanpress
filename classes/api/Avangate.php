@@ -15,17 +15,21 @@ class Avangate
 
         $now = date('Y-m-d H:i:s');
 
-        $client = new SoapClient($connectionDetails['host'] . '?wsdl', array(
+        try {
+            $client = new SoapClient($connectionDetails['host'] . '?wsdl', [
             'location' => $connectionDetails['host'],
             'proxy_host' => isset($connectionDetails['proxyHost']) ? $connectionDetails['proxyHost'] : '',
             'proxy_port' => isset($connectionDetails['proxyPort']) ? $connectionDetails['proxyPort'] : '',
-            'stream_context' => stream_context_create(array(
-                'ssl' => array(
+                'stream_context' => stream_context_create([
+                    'ssl' => [
                     'verify_peer' => false,
                     'verify_peer_name' => false
-                )
-            ))
-        ));
+                    ]
+                ])
+            ]);
+        } catch ( SoapFault $e ) { // Do NOT try and catch "Exception" here
+            echo 'sorry... our service is down';
+        }
 
         if (!$client) {
             throw new Exception('Could not create SOAP client!');
@@ -72,28 +76,16 @@ class Avangate
                 'post_excerpt' => $rawProduct->ShortDescription,
                 'post_content' => $rawProduct->LongDescription,
                 '_price' => $rawProduct->PricingConfigurations[0]->Prices->Regular[0]->Amount,
-                '_image' => $rawProduct->ProductImages[0]->URL,
-                'ImageUrl' => $rawProduct->ProductImages[0]->URL
+                //'_image' => $rawProduct->ProductImages[0]->URL,
             );
 
-            /*
-            foreach ($rawProduct->PricingConfigurations as $priceDetails) {
-                $price = array(
-                    'Type' => $priceDetails->PriceType,
-                    'Values' => $priceDetails->Prices->Regular
-                );
-
-                $values = array();
-                foreach ($priceDetails->Prices->Regular as $regularPrice) {
-                    $values['Currency'] = $regularPrice->Currency;
-                    $values['Amount'] = $regularPrice->Amount;
+            foreach ($rawProduct->ProductImages as $image) {
+                if ($image->Default) {
+                    $product['_image'] = $image->URL;
+                    break;
                 }
-                $price['Values'] = $values;
-
-                $prices = $price;
             }
-            $product['Prices'] = $prices;
-            */
+
 
             $products[] = $product;
         }
@@ -201,6 +193,7 @@ class Avangate
                 //die(print_r($WooProduct,1));
             }
         }
+       return true;
     }
 
     public function cardType($number)

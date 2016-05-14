@@ -356,29 +356,6 @@ if ( ! class_exists( 'AP_Settings' ) ) {
                 $new_settings['basic'][$index] = trim($value);
             }
 
-            /*
-             * Connection Settings validation
-             */
-//            if ( empty( trim($new_settings['basic']['field-hostname']) )) {
-//                add_notice( 'Hostname is mandatory', 'error' );
-//            }
-//            if ( empty( trim($new_settings['basic']['field-location']) )) {
-//                add_notice( 'Location is mandatory', 'error' );
-//            }
-//            if ( empty( trim($new_settings['basic']['field-merchant-code']) )) {
-//                add_notice( 'Merchant code is mandatory', 'error' );
-//            }
-//            if ( empty( trim($new_settings['basic']['field-merchant-key']) )) {
-//                add_notice( 'Merchant key is mandatory', 'error' );
-//            }
-
-            /*
-             * Advanced Settings
-             */
-
-            // $new_settings['advanced']['field-example2'] = 'asdasdasd';
-
-
             return $new_settings;
         }
 

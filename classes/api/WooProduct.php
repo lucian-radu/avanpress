@@ -119,9 +119,79 @@ class WooProduct
                 }
             }
 
+            if (!empty($product['_image'])){
+                $this->featured_image = $product['_image'];
+                $this->featured_image = $product['_image'];
+            }
+
         }
     }
 
+
+    /**
+     * Save image for current product
+     */
+    public function save_featured_image() {
+
+        if ($this->is_valid_url($this->featured_image)) {
+            $imageID = $this->save_image_with_url($this->featured_image);
+        }
+
+        // @ since XXX check if the url is valid
+        if ( !is_wp_error( $imageID ) ) {
+            set_post_thumbnail( $this->body['ID'], $imageID );
+        }
+    }
+
+
+    //@since 3.0.5 use WP functions to upload and handle images with url's
+    function save_image_with_url($url) {
+
+
+        $tmp = download_url( $url , 10 );
+
+        if( is_wp_error( $tmp ) ){
+            //something went wrong during download
+            @unlink($file_array['tmp_name']);
+            return false;
+        }
+
+
+        $post_id = $this->body['ID'];
+        $desc = '';
+        $file_array = array();
+        $id = false;
+
+
+        @preg_match('/[^\?]+\.(jpg|jpe|jpeg|gif|png|pdf)/i', $url, $matches);
+        if (!$matches) {
+            $file_array['tmp_name'] = $tmp;
+            $file_array['name'] = sanitize_file_name($url);
+            $desc = '';
+        } else {
+            $file_array['name'] = basename($matches[0]);
+            $file_array['tmp_name'] = $tmp;
+            $desc = $file_array['name'];
+        }
+
+        // do the validation and storage stuff
+        $id = media_handle_sideload( $file_array, $post_id, $desc );
+
+        // If error storing permanently, unlink
+        if ( is_wp_error($id) ) {
+            @unlink($file_array['tmp_name']);
+            return $id;
+        }
+
+        return $id;
+    }
+
+
+
+    /**
+     * @return bool
+     * Save the product data
+     */
     public function save(){
 
         //save main data
@@ -137,6 +207,11 @@ class WooProduct
         //save the meta
         foreach ($this->meta as $key=>$value) {
             update_post_meta($postId, $key, $value);
+        }
+
+        //save image
+        if (!empty($this->featured_image)) {
+            $this->save_featured_image();
         }
 
         return $postId;

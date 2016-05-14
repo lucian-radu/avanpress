@@ -1,13 +1,9 @@
 <?php
+
 class Avangate
 {
     protected $soapClient;
     protected $sessionId;
-
-    public function getSessionId()
-    {
-        return $this->sessionId;
-    }
 
     public function __construct($connectionDetails)
     {
@@ -36,13 +32,28 @@ class Avangate
         $this->soapClient = $client;
 
         $string = strlen($connectionDetails['merchantCode']) . $connectionDetails['merchantCode'] . strlen($now) . $now;
-        $hash = $this->hmac($connectionDetails['secretKey'], $string);
+        $hash = hmac($connectionDetails['secretKey'], $string);
 
         try {
             $this->sessionId = $this->soapClient->login($connectionDetails['merchantCode'], $now, $hash);
         } catch (SoapFault $e) {
             throw new Exception('Could not login!');
         }
+    }
+
+    public function getSessionId()
+    {
+        return $this->sessionId;
+    }
+
+    public function checkConnection()
+    {
+        if (empty($this->sessionId)) {
+            return false;
+        } else {
+            return true;
+        }
+
     }
 
     public function getProducts()
@@ -110,11 +121,11 @@ class Avangate
         // set delivery details
         $deliveryObj = new stdClass();
         $deliveryObj->Address1 = $orderDetails->shipping_address_1;
-        $deliveryObj->Address2 =  $orderDetails->shipping_address_2;
-        $deliveryObj->City =  $orderDetails->shipping_city;
-        $deliveryObj->State =  $orderDetails->shipping_state;
-        $deliveryObj->CountryCode =  $orderDetails->shipping_country;
-        $deliveryObj->FirstName =  $orderDetails->shipping_first_name;
+        $deliveryObj->Address2 = $orderDetails->shipping_address_2;
+        $deliveryObj->City = $orderDetails->shipping_city;
+        $deliveryObj->State = $orderDetails->shipping_state;
+        $deliveryObj->CountryCode = $orderDetails->shipping_country;
+        $deliveryObj->FirstName = $orderDetails->shipping_first_name;
         $deliveryObj->LastName = $orderDetails->shipping_last_name;
         $deliveryObj->Zip = $orderDetails->shipping_postcode;
         $deliveryObj->Company = $orderDetails->shipping_company;
@@ -124,11 +135,12 @@ class Avangate
         $paymentMethod = new stdClass();
         $paymentMethod->RecurringEnabled = 1;
 
-        $paymentDetails = new stdClass();
-        $paymentDetails->Type = 'CCNOPCI'; //TEST
-        $paymentDetails->Currency = $orderDetails->order_currency;
-        $paymentDetails->CustomerIP = $orderDetails->customer_ip_address;
-        $paymentDetails->PaymentMethod = $paymentMethod;
+//        $paymentDetails = new stdClass();
+//       // $paymentDetails->Type = 'CCNOPCI'; //TEST
+//        $paymentDetails->Type = 'CCNOPCI'; //TEST
+//        $paymentDetails->Currency = $orderDetails->order_currency;
+//        $paymentDetails->CustomerIP = $orderDetails->customer_ip_address;
+//        $paymentDetails->PaymentMethod = $paymentMethod;
 
         $orderObj = new stdClass();
         $orderObj->Currency = $orderDetails->order_currency;
@@ -145,7 +157,7 @@ class Avangate
         $orderObj->PaymentDetails->Type = 'TEST';
         $orderObj->PaymentDetails->Currency = $orderDetails->order_currency;
         $orderObj->PaymentDetails->PaymentMethod = new stdClass ();
-        $orderObj->PaymentDetails->CustomerIP =  $orderDetails->customer_ip_address;
+        $orderObj->PaymentDetails->CustomerIP = $orderDetails->customer_ip_address;
         $orderObj->PaymentDetails->PaymentMethod->RecurringEnabled = true;
         $orderObj->PaymentDetails->PaymentMethod->CardNumber = "4111111111111111";
         $orderObj->PaymentDetails->PaymentMethod->CardType = 'visa';
@@ -153,6 +165,8 @@ class Avangate
         $orderObj->PaymentDetails->PaymentMethod->ExpirationMonth = '12';
         $orderObj->PaymentDetails->PaymentMethod->HolderName = 'John';
         $orderObj->PaymentDetails->PaymentMethod->CCID = '123';
+
+        //'http://hackaton.local.dev/avangate-ipn/register'
 
         $orderObj->Items = array();
         foreach ($orderDetails->get_items() as $idx => $productInfo) {
@@ -170,26 +184,6 @@ class Avangate
 
         return $newOrderDetails;
     }
-
-
-
-    private function hmac($key, $data)
-    {
-        $b = 64; // byte length for md5
-        if (strlen($key) > $b) {
-            $key = pack("H*",md5($key));
-        }
-        $key  = str_pad($key, $b, chr(0x00));
-        $ipad = str_pad('', $b, chr(0x36));
-        $opad = str_pad('', $b, chr(0x5c));
-        $k_ipad = $key ^ $ipad ;
-        $k_opad = $key ^ $opad;
-
-        return md5($k_opad  . pack("H*",md5($k_ipad . $data)));
-    }
-
-
-
 }
 
 

@@ -116,29 +116,33 @@ class Avangate_Gateway extends WC_Payment_Gateway {
         }catch(\Exception $e) {
             echo $e->getMessage();
         }
-        $paymentDetails = array(
-            'session_id' => $apiClient->api->getSessionId(),
-            'card_number' => '4111111111111111',
-            'card_type' => 'visa',
-            'ccid' => '123',
-            'date_month' => '12',
-            'date_year' => '2019',
-            'holder_name' => 'John',
-        );
-        var_dump($post_url);
-
-        try{
-            // Send this payload to Authorize.net for processing
-            $response = wp_remote_post( $post_url, array(
-                'method'    => 'POST',
-                'body'      => http_build_query( $paymentDetails ),
-                'timeout'   => 90,
-                'sslverify' => false,
-            ) );
-            var_dump($response);
-        }catch(\Exception $e){
-            echo $e->getMessage();
-        }
+        var_dump($response);
+//        $refno = $response->RefNo;
+       // $external = $response->ExternalReference;
+        die;
+//        $paymentDetails = array(
+//            'session_id' => $apiClient->api->getSessionId(),
+//            'card_number' => '4111111111111111',
+//            'card_type' => 'visa',
+//            'ccid' => '123',
+//            'date_month' => '12',
+//            'date_year' => '2019',
+//            'holder_name' => 'John',
+//        );
+//        var_dump($post_url);
+//
+//        try{
+//            // Send this payload to Authorize.net for processing
+//            $response = wp_remote_post( $post_url, array(
+//                'method'    => 'POST',
+//                'body'      => http_build_query( $paymentDetails ),
+//                'timeout'   => 90,
+//                'sslverify' => false,
+//            ) );
+//            var_dump($response);
+//        }catch(\Exception $e){
+//            echo $e->getMessage();
+//        }
 
 
 

@@ -53,4 +53,6 @@
 
 <?php if ( 'ap_settings[advanced][field-import-button]' == $field['label_for'] ) : ?>
 	<input type="button" id="<?php esc_attr_e( 'ap_settings[advanced][field-import-button]' ); ?>" value="Import products" class="ap-import-products button-primary" name="<?php esc_attr_e( 'ap_settings[advanced][field-import-button]' ); ?>" />
+<?php elseif ( 'ap_settings[advanced][field-check-connection-button]' == $field['label_for'] ) : ?>
+	<input type="button" id="<?php esc_attr_e( 'ap_settings[advanced][field-check-connection-button]' ); ?>" value="Check connection" class="ap-check-connection button-primary" name="<?php esc_attr_e( 'ap_settings[advanced][field-check-connection-button]' ); ?>" />
 <?php endif; ?>

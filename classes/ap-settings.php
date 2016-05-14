@@ -345,24 +345,24 @@ if ( ! class_exists( 'AP_Settings' ) ) {
                 $new_settings['db-version'] = AvanPress::VERSION;
             }
 
+            foreach ($new_settings['basic'] as $index => $value){
+                $new_settings['basic'][$index] = trim($value);
+            }
+
             /*
              * Connection Settings validation
              */
             if ( empty( trim($new_settings['basic']['field-hostname']) )) {
                 add_notice( 'Hostname is mandatory', 'error' );
-                $new_settings['basic']['field-hostname'] = self::$default_settings['basic']['field-hostname'];
             }
             if ( empty( trim($new_settings['basic']['field-location']) )) {
                 add_notice( 'Location is mandatory', 'error' );
-                $new_settings['basic']['field-location'] = self::$default_settings['basic']['field-location'];
             }
             if ( empty( trim($new_settings['basic']['field-merchant-code']) )) {
                 add_notice( 'Merchant code is mandatory', 'error' );
-                $new_settings['basic']['field-location'] = self::$default_settings['basic']['merchant-code'];
             }
             if ( empty( trim($new_settings['basic']['field-merchant-key']) )) {
                 add_notice( 'Merchant key is mandatory', 'error' );
-                $new_settings['basic']['field-location'] = self::$default_settings['basic']['merchant-key'];
             }
 
             /*

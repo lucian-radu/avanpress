@@ -105,7 +105,7 @@ if (!class_exists('AP_Notify')) {
                 $hash =  hmac($pass, $result); /* HASH for data received */
                 
                 $body .= $result."\r\n\r\nHash: ".$hash."\r\n\r\nSignature: {$signature}\r\n\r\nReturnSTR: ".$return;
-
+                
                 if ($hash == $signature) {
                     
                     echo 'Verified OK!';
@@ -116,13 +116,13 @@ if (!class_exists('AP_Notify')) {
                     $this->markOrderAsComplete($_POST['REFNOEXT']);
                     
                     /* Begin automated procedures (START YOUR CODE)*/
-                    if (self::DEBUG_MODE) {
+                    if (AvanPress::DEBUG_MODE) {
                         @mail(get_option('admin_email'), 'Good IPN', $body);
                     }
                 }
                 else {
                     /* warning email */
-                    if (self::DEBUG_MODE) {
+                    if (AvanPress::DEBUG_MODE) {
                         @mail(get_option('admin_email'), 'BAD IPN Signature', $body);
                     }
                 }

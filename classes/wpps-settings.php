@@ -222,42 +222,65 @@ if ( ! class_exists( 'WPPS_Settings' ) ) {
 		 */
 		public function register_settings() {
 			/*
-			 * Basic Section
+			 * Connection Section
 			 */
 			add_settings_section(
 				'wpps_section-basic',
-				'Basic Settings',
+				'Connection details',
 				__CLASS__ . '::markup_section_headers',
 				'wpps_settings'
 			);
-
+			// Connection form fields
 			add_settings_field(
-				'wpps_field-example1',
-				'Example Field 1',
+				'wpps_field-hostname',
+				'Hostname',
 				array( $this, 'markup_fields' ),
 				'wpps_settings',
 				'wpps_section-basic',
-				array( 'label_for' => 'wpps_field-example1' )
+				array( 'label_for' => 'wpps_settings[basic][field-hostname]' )
 			);
-
+			add_settings_field(
+				'wpps_field-location',
+				'Location',
+				array( $this, 'markup_fields' ),
+				'wpps_settings',
+				'wpps_section-basic',
+				array( 'label_for' => 'wpps_settings[basic][field-location]' )
+			);
+			add_settings_field(
+				'wpps_field-merchant-code',
+				'Merchant code',
+				array( $this, 'markup_fields' ),
+				'wpps_settings',
+				'wpps_section-basic',
+				array( 'label_for' => 'wpps_settings[basic][field-merchant-code]' )
+			);
+			add_settings_field(
+				'wpps_field-merchant-key',
+				'Merchant key',
+				array( $this, 'markup_fields' ),
+				'wpps_settings',
+				'wpps_section-basic',
+				array( 'label_for' => 'wpps_settings[basic][field-merchant-key]')
+			);
 
 			/*
-			 * Advanced Section
+			 * Import products button
 			 */
 			add_settings_section(
 				'wpps_section-advanced',
-				'Advanced Settings',
+				'Import',
 				__CLASS__ . '::markup_section_headers',
 				'wpps_settings'
 			);
 
 			add_settings_field(
-				'wpps_field-example2',
-				'Example Field 2',
+				'wpps_field-import-button',
+				'Import products',
 				array( $this, 'markup_fields' ),
 				'wpps_settings',
 				'wpps_section-advanced',
-				array( 'label_for' => 'wpps_field-example2' )
+				array( 'label_for' => 'wpps_settings[advanced][field-import-button]')
 			);
 
 
@@ -312,16 +335,25 @@ if ( ! class_exists( 'WPPS_Settings' ) ) {
 				$new_settings['db-version'] = AvanPress::VERSION;
 			}
 
-
 			/*
-			 * Basic Settings
+			 * Connection Settings validation
 			 */
-
-			if ( strcmp( $new_settings['basic']['field-example1'], 'valid data' ) !== 0 ) {
-				add_notice( 'Example 1 must equal "valid data"', 'error' );
-				$new_settings['basic']['field-example1'] = self::$default_settings['basic']['field-example1'];
+			if ( empty( trim($new_settings['basic']['field-hostname']) )) {
+				add_notice( 'Hostname is mandatory', 'error' );
+				$new_settings['basic']['field-hostname'] = self::$default_settings['basic']['field-hostname'];
 			}
-
+			if ( empty( trim($new_settings['basic']['field-location']) )) {
+				add_notice( 'Location is mandatory', 'error' );
+				$new_settings['basic']['field-location'] = self::$default_settings['basic']['field-location'];
+			}
+			if ( empty( trim($new_settings['basic']['field-merchant-code']) )) {
+				add_notice( 'Merchant code is mandatory', 'error' );
+				$new_settings['basic']['field-location'] = self::$default_settings['basic']['merchant-code'];
+			}
+			if ( empty( trim($new_settings['basic']['field-merchant-key']) )) {
+				add_notice( 'Merchant key is mandatory', 'error' );
+				$new_settings['basic']['field-location'] = self::$default_settings['basic']['merchant-key'];
+			}
 
 			/*
 			 * Advanced Settings

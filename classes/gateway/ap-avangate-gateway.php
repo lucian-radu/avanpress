@@ -101,74 +101,46 @@ class Avangate_Gateway extends WC_Payment_Gateway {
 
         // Get this Order's information so that we know
         // who to charge and how much
-        $customer_order = new WC_Order( $order_id );
+        $order = new WC_Order( $order_id );
 
         // Are we testing right now or is it a real transaction
         $environment = ( $this->environment == "yes" ) ? 'TRUE' : 'FALSE';
 
-        // Decide which URL to post to
-        $environment_url = ( "FALSE" == $environment )
-            ? 'https://secure.authorize.net/gateway/transact.dll'
-            : 'https://test.authorize.net/gateway/transact.dll';
 
-        // This is where the fun stuff begins
-        $payload = array(
-            // Authorize.net Credentials and API Info
-            "x_tran_key"           	=> $this->trans_key,
-            "x_login"              	=> $this->api_login,
-            "x_version"            	=> "3.1",
-
-            // Order total
-            "x_amount"             	=> $customer_order->order_total,
-
-            // Credit Card Information
-            "x_card_num"           	=> str_replace( array(' ', '-' ), '', $_POST['spyr_authorizenet_aim-card-number'] ),
-            "x_card_code"          	=> ( isset( $_POST['spyr_authorizenet_aim-card-cvc'] ) ) ? $_POST['spyr_authorizenet_aim-card-cvc'] : '',
-            "x_exp_date"           	=> str_replace( array( '/', ' '), '', $_POST['spyr_authorizenet_aim-card-expiry'] ),
-
-            "x_type"               	=> 'AUTH_CAPTURE',
-            "x_invoice_num"        	=> str_replace( "#", "", $customer_order->get_order_number() ),
-            "x_test_request"       	=> $environment,
-            "x_delim_char"         	=> '|',
-            "x_encap_char"         	=> '',
-            "x_delim_data"         	=> "TRUE",
-            "x_relay_response"     	=> "FALSE",
-            "x_method"             	=> "CC",
-
-            // Billing Information
-            "x_first_name"         	=> $customer_order->billing_first_name,
-            "x_last_name"          	=> $customer_order->billing_last_name,
-            "x_address"            	=> $customer_order->billing_address_1,
-            "x_city"              	=> $customer_order->billing_city,
-            "x_state"              	=> $customer_order->billing_state,
-            "x_zip"                	=> $customer_order->billing_postcode,
-            "x_country"            	=> $customer_order->billing_country,
-            "x_phone"              	=> $customer_order->billing_phone,
-            "x_email"              	=> $customer_order->billing_email,
-
-            // Shipping Information
-            "x_ship_to_first_name" 	=> $customer_order->shipping_first_name,
-            "x_ship_to_last_name"  	=> $customer_order->shipping_last_name,
-            "x_ship_to_company"    	=> $customer_order->shipping_company,
-            "x_ship_to_address"    	=> $customer_order->shipping_address_1,
-            "x_ship_to_city"       	=> $customer_order->shipping_city,
-            "x_ship_to_country"    	=> $customer_order->shipping_country,
-            "x_ship_to_state"      	=> $customer_order->shipping_state,
-            "x_ship_to_zip"        	=> $customer_order->shipping_postcode,
-
-            // Some Customer Information
-            "x_cust_id"            	=> $customer_order->user_id,
-            "x_customer_ip"        	=> $_SERVER['REMOTE_ADDR'],
-
+        $apiClient = AP_Api::get_instance();
+        $settings = AP_Settings::get_instance();
+//var_dump($order->get_product_from_item()); die;
+        try {
+            $response = $apiClient->api->placeOrder($order);
+            $post_url = $response->PaymentDetails->PaymentMethod->RedirectURL;
+        }catch(\Exception $e) {
+            echo $e->getMessage();
+        }
+        $paymentDetails = array(
+            'session_id' => $apiClient->api->getSessionId(),
+            'card_number' => '4111111111111111',
+            'card_type' => 'visa',
+            'ccid' => '123',
+            'date_month' => '12',
+            'date_year' => '2019',
+            'holder_name' => 'John',
         );
+        var_dump($post_url);
 
-        // Send this payload to Authorize.net for processing
-        $response = wp_remote_post( $environment_url, array(
-            'method'    => 'POST',
-            'body'      => http_build_query( $payload ),
-            'timeout'   => 90,
-            'sslverify' => false,
-        ) );
+        try{
+            // Send this payload to Authorize.net for processing
+            $response = wp_remote_post( $post_url, array(
+                'method'    => 'POST',
+                'body'      => http_build_query( $paymentDetails ),
+                'timeout'   => 90,
+                'sslverify' => false,
+            ) );
+            var_dump($response);
+        }catch(\Exception $e){
+            echo $e->getMessage();
+        }
+
+
 
         if ( is_wp_error( $response ) )
             throw new Exception( __( 'We are currently experiencing problems trying to connect to this payment gateway. Sorry for the inconvenience.', 'avanpress' ) );

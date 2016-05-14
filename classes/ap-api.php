@@ -51,11 +51,14 @@ if ( ! class_exists( 'AP_Api' ) ) {
 
             $settings = array(
                 'host' => $apSetting->settings['basic']['field-hostname'].$apSetting->settings['basic']['field-location'],
-                'proxyHost' => 'proxy.avangate.local',
-                'proxyPort' => '8080',
                 'merchantCode' => $apSetting->settings['basic']['field-merchant-code'],
                 'secretKey' => $apSetting->settings['basic']['field-merchant-key'],
             );
+            if($apSetting->settings['basic']['field-proxy-host'] && $apSetting->settings['basic']['field-proxy-port']){
+                $settings['proxyHost'] = $apSetting->settings['basic']['field-proxy-host'];
+                $settings['proxyPort'] = $apSetting->settings['basic']['field-proxy-port'];
+            }
+
             return $settings;
         }
 

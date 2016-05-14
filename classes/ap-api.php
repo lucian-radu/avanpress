@@ -69,6 +69,7 @@ if ( ! class_exists( 'AP_Api' ) ) {
 
             add_action( 'init',                  array( $this, 'init' ) );
             add_action( 'wp_ajax_import_products', array($this, 'ajax_import_products') );
+            add_action( 'wp_ajax_check_connection', array($this, 'ajax_check_connection') );
 
             //add_filter( 'cron_schedules',        __CLASS__ . '::add_custom_cron_intervals' );
         }
@@ -79,7 +80,11 @@ if ( ! class_exists( 'AP_Api' ) ) {
             die();
         }
 
-
+        public function ajax_check_connection()
+        {
+            echo json_encode(["connectionStatus" => $this->api->checkConnection()]);
+            die();
+        }
 
         /**
          * Initializes variables

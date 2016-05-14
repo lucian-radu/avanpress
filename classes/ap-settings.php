@@ -284,6 +284,16 @@ if ( ! class_exists( 'AP_Settings' ) ) {
                 'ap_settings'
             );
 
+
+            add_settings_field(
+                'ap_field-check-connection-button',
+                'Check avangate connection',
+                array( $this, 'markup_fields' ),
+                'ap_settings',
+                'ap_section-advanced',
+                array( 'label_for' => 'ap_settings[advanced][field-check-connection-button]')
+            );
+
             add_settings_field(
                 'ap_field-import-button',
                 'Import products',
@@ -292,6 +302,7 @@ if ( ! class_exists( 'AP_Settings' ) ) {
                 'ap_section-advanced',
                 array( 'label_for' => 'ap_settings[advanced][field-import-button]')
             );
+
 
 
             // The settings container

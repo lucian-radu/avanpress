@@ -38,7 +38,7 @@ function wpps_requirements_met() {
 		return false;
 	}
 
-	/*
+	/*'
 	if ( ! is_plugin_active( 'plugin-directory/plugin-file.php' ) ) {
 		return false;
 	}
@@ -62,7 +62,8 @@ function wpps_requirements_error() {
  */
 if ( wpps_requirements_met() ) {
 	require_once( __DIR__ . '/classes/wpps-module.php' );
-	require_once( __DIR__ . '/classes/avanpress.php' );
+    require_once( __DIR__ . '/classes/avanpress.php' );
+    require_once( __DIR__ . '/classes/ap-gateway.php' );
 	require_once( __DIR__ . '/includes/admin-notice-helper/admin-notice-helper.php' );
 	require_once( __DIR__ . '/classes/wpps-settings.php' );
 	require_once( __DIR__ . '/classes/wpps-cron.php' );

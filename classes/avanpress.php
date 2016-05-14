@@ -12,7 +12,7 @@ if ( ! class_exists('AvanPress') ) {
 		protected static $writeable_properties = array();
 		protected $modules;
 
-		const VERSION    = '0.4a';
+		const VERSION    = '0.1beta';
 		const PREFIX     = 'wpps_';
 		const DEBUG_MODE = false;
 
@@ -31,7 +31,8 @@ if ( ! class_exists('AvanPress') ) {
 
 			$this->modules = array(
 				'WPPS_Settings'    => WPPS_Settings::get_instance(),
-				'WPPS_Cron'        => WPPS_Cron::get_instance()
+				'WPPS_Cron'        => WPPS_Cron::get_instance(),
+                'AP_Gateway'       => AP_Gateway::get_instance()
 			);
 		}
 

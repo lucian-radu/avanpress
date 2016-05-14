@@ -8,6 +8,8 @@ if ( ! class_exists( 'WPPS_Module' ) ) {
 	abstract class WPPS_Module {
 		private static $instances = array();
 
+        const PREFIX     = 'wpps_';
+
 
 		/*
 		 * Magic methods

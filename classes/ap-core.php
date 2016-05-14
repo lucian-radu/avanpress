@@ -13,7 +13,7 @@ if ( ! class_exists('AvanPress') ) {
 		protected $modules;
 
 		const VERSION    = '0.1beta';
-		const DEBUG_MODE = false;
+		const DEBUG_MODE = true;
 
 
 		/*
@@ -31,7 +31,8 @@ if ( ! class_exists('AvanPress') ) {
 			$this->modules = array(
 				'AP_Settings'    => AP_Settings::get_instance(),
 				'AP_Cron'        => AP_Cron::get_instance(),
-                'AP_Gateway'       => AP_Gateway::get_instance()
+				'AP_Gateway'     => AP_Gateway::get_instance(),
+				'AP_Notify'      => AP_Notify::get_instance(),
 			);
 		}
 
